@@ -1,0 +1,12 @@
+(
+	\name: "NTSS",
+	\path: "NTSS",
+	\summary: "setup for the Nontrivial Sound System",
+	\author: "Bruno Gola, Alberto de Campo",
+	\version: 0.1,
+	\url: "http://s4ntp.org/",
+	\since: "2025",
+	\dependencies: [
+		"JITLibExtensions", "adclib", "SpeakersCorner",
+	]
+)
