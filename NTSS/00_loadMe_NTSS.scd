@@ -1,17 +1,12 @@
 /*
-this is a new loadMe for NTSS,
-so we can keep Biophony loadMe for switching between both.
-Then we can throw out all Biophony-only code here.
-
-StartupFile.writeStartupFileToExternalPath('NTSS2', thisProcess.nowExecutingPath);
-StartupFile.writeRedirectFile('NTSS2');
-StartupFile.dialog;
+This is a new loadMe for NTSS, which is based on the Biophony quark.
+There are still Biophony-specific code files in here
+which will be either integrated or removed/moved aside over time.
 
 ServerOptions.devices.cs
+
 */
-
-//XConnect(\gencomp);
-
+// works for macOS, to test for others
 NTSS.defaults.inDevice = "X-USB"; // Behringer X-32 mixer in macOS
 NTSS.defaults.outDevice = "X-USB";
 NTSS.defaults.device = "X-USB";
@@ -31,6 +26,7 @@ s.options.numAudioBusChannels = 2048;
 s.options.maxNodes = 4096;
 s.options.numWireBufs = 512;
 s.options.hardwareBufferSize = 256;
+// if sampleRate was already set, keep it
 s.options.sampleRate = s.options.sampleRate ? 44100;
 
 
@@ -41,6 +37,7 @@ q.ntss.speakersDict[q.ntss.speakersActive[0]]
 q.ntss.speakersActive.collect { |sp,i| [sp] ++ q.ntss.speakersDict[sp][..2] ++ [z[i]] }.do {|el| "%: [ %, %, %, %],".format(*el).postln }
 */
 
+// the speakers as in Medienhaus 111
 q.ntss.speakersDict = (
 	//      x    y    z   amp
 	bw5: [ 1.2, 5.3, 0.0, 0.4],
@@ -71,7 +68,7 @@ q.ntss.speakersDict = (
 	sub1: [ -3.5, 2.8, 0.0, 1]
 );
 
-
+// in order of physical outputs :
 q.ntss.speakersOrder = [
 	// 7 XLR outs from X32, 7 to Denon amp
 	\bw5,
@@ -118,21 +115,24 @@ q.ntss.speakersOrder = [
 	\empty,
 	\empty,
 
-	// monitor out
+	// X32 monitor out
 	\sub0,
 	\sub1,
 ];
 
+// we play only to the connected speakers, so select these:
 q.ntss.speakersActive = q.ntss.speakersOrder.reject {|spk| spk == \empty };
+
 q.ntss.speakersTuning = q.ntss.speakersActive.collect {|spk| q.ntss.speakersDict[spk][3] };
 q.ntss.speakers = q.ntss.speakersActive.collect {|key|
 	var loc = q.ntss.speakersDict[key];
 	[loc[0], loc[1], loc[2]]
 }.flat.normalize(-0.85,0.85).reshape(q.ntss.speakersActive.size, 3);
 
-//q.ntss.amp_names = q.ntss.speakers.size.collect {|i| "amp_%".format(i).asSymbol };
+// names to use for setting output amps
 q.ntss.amp_names = q.ntss.speakersActive;
 
+// number of Pepsi mixer channels (see David Tudor) as ProxyChains
 q.numPmcs = 16;
 ~num = q.ntss.speakersOrder.size;
 ~numIOchans = 32; // 16 for install, 24 for concert
@@ -160,7 +160,8 @@ Spec.add(\delaytime, [0.01, 10, \exp]);
 
 Spec.add(\loop, \unipolar);
 
-// make them dynamically overwriteable later in code!
+// These are still the names of Biophony inputs.
+// they are dynamically overwriteable later in code!
 q.inNames = q.inNames ? [
 	\kiteMic, \richtMic, \funkMic1,\funkMic2,
 	\micA_innen, \micB_innen, \micC_innen,
@@ -173,7 +174,7 @@ q.inNames = q.inNames ? [
 ].collect { |name, i| ((i+1).asString ++ name).asSymbol }.postcs;
 
 
-// make nameViews better readable
+// make nameViews on NdefGuis etc better readable
 q.tuneNameView = { |q, obj|
 	var nameFont = Font(Font.defaultSansFace, 14);
 	if (obj.respondsTo(\nameView)) { obj = obj.nameView };
@@ -204,6 +205,7 @@ Butz.add(\MainFX, { WinBounds.showOrMake(\MainFX) });
 Butz.add(\N_T_S_S, {});
 
 // put NTSS specifics in its own Butz:
+Butz('NTSS').addMiniMax;
 Butz(\NTSS).add(\N_T_S_S, {});
 Butz(\NTSS).add(\SpatioScope, { WinBounds.showOrMake(\SpatioScope) });
 Butz(\NTSS).add(\NdefMixer, { WinBounds.showOrMake(\NdefMixer) });
@@ -304,18 +306,16 @@ s.waitForBoot {
 
 	// and others ...
 
-	// get biophony panner functions
+	// get panner functions
 	"chanPanFuncs.scd".postcs.loadRelative;
 
+	// make Pepsi mixer channels (see David Tudor) as ProxyChains
 	"chain1make.scd".postcs.loadRelative;
 
 	0.2.wait;
 
 	"chanPanGuis.scd".postcs.loadRelative;
-	"TopWindow.scd".postcs.resolveRelative.loadPaths;
-
-	// ("audio buses top: " + s.audioBusAllocator.top).postcs;
-	// ("bufs top: " + s.bufferAllocator.top).postcs;
+	"TopWindow.scd".postcs.loadRelative;
 
 	0.1.wait;
 
@@ -327,5 +327,7 @@ s.waitForBoot {
 
 	WinBounds.restoreAll;
 	q.ntss.ready = true;
+	// put next setup script in q.ntss.finalSetup,
+	// so it runs here:
 	q.ntss.finalSetup;
 };
