@@ -1,3 +1,7 @@
+/*
+This is all Biophony, would be useful
+to adapt to NTSS input and speaker configs.
+
 Ins:
 
 INS 1-8 - 8 Microphones on
@@ -34,6 +38,8 @@ With expander:
 16 + 16 analog ins on plugs
 16 + 8 return inputs from SC
 -> 8 + 6 aux + 8 hardware outs on mixer
+
+*/
 
 s.meter;
 

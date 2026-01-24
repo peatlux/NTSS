@@ -1,3 +1,9 @@
+/*
+This is Biophony-specific, not sure if adaptable to NTSS
+NTSS could have rings or other meaningful groups
+that are not concentric, but e.g. zones.
+*/
+
 MKtl.all[\LevelControl].free;
 
 MKtl(\LevelControl, "*beatstep-rel*");
