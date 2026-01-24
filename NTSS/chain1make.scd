@@ -1,28 +1,41 @@
 /*
 PMC:
-Pepsi Modifier Board Channel,
-or Proxy MultiFX Chain system
+Pepsi Modifier Board Channel, or Proxy MultiFX Chain
+
+input module has
+* mic input selector and amp
+* proxy mono input dropsink and amp
+* noiseamp for quick testing
+
+sndfile module has
+* soundfile dropsink, bufnum,
+* playrate, looping, modulation
+
+FX chain has
+
+
 wishlist:
-X 1 drop sink for each channel/chain
-X pepsi sndfile (sndfile player)
-
-
-- make a sndfiles/sndfiles folder locally,
+- select already loaded buffers
+- organize sndfiles and folder locally,
 - with subfolders to load array of files at once
-- add EnvMod to FM.
-- add Vibrato mode to FM
 
-- ProxyChainPreset:
+ProxyChainPreset:
 - share stored presets between PCPs
-- store one global preset collection of all 3
+- store one global preset collection of all ?
 
 
 */
 
 q = q ? ();
 q.numPmcs = q.numPmcs ? 8;
-q.names = [\ada, \bob, \cecilia, \dada, \eek, \fifi, \gogo, \hah, \ivy, \jay, \kiki, \lily, \mimi, \nana, \opo, \qiqo, \roro, \sisu, \tata, \ubu, \vovo, \wawa, \xoxo, \yoyo, \zazie ];
-q.pcNames = q.numPmcs.collect { |i| ("ch" ++ (i+1) ++ q.names[i]).asSymbol };
+q.names = [
+	\ada, \bob, \cecilia, \dada, \eek,
+	\fifi, \gogo, \hah, \ivy, \jay,
+	\kiki, \lily, \mimi, \nana, \opo,
+	\pepe, \qiqo, \roro, \sisu, \tata,
+	\ubu, \vovo, \wawa, \xoxo, \yoyo, \zazie ];
+
+q.pcNames = q.numPmcs.collect { |i| ("ch" ++ (i+ 101).asString.keep(-2) ++ q.names[i]).asSymbol };
 q.pannerNames = q.pcNames.collect { |name| name.asString.insert(2, "P").asSymbol };
 
 (
