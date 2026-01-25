@@ -6,7 +6,9 @@ WinBounds.addMake(q.topName, {
 
 	var f = Font("Monaco", 18);
 	var f2 = Font("Monaco", 14);
-	var w = Window(q.topName, Rect(520, Window.availableBounds.height - 500, 900, 510)).front;
+	var w = Window(q.topName ++ " - Nontrivial Sound System",
+		Rect(520, Window.availableBounds.height - 500, 900, 510)
+	).front;
 	var allViews, leftCol, volSlider;
 	w.alpha = 0.8;
 	w.addFlowLayout;
