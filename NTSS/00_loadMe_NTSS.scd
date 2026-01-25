@@ -70,17 +70,29 @@ q.ntss.speakersDict = (
 
 	// not in any group
 	sub0: [ 0.0, 0.0, 0.0, 1],
-	sub1: [ -3.5, 2.8, 0.0, 1]
+	sub1: [ -4, 3, 0.0, 1],
+
 );
 
 // make 4 rings of 6 speakers each
-q.ntss.ringDict = (
-	// clockwise, always begin at center, so they can be one long twirl
+q.ntss.spkGroups = (
+	// 4 rings: clockwise, always begin at center, so they can be one long twirl
 	left: [\wd12, \cabass2, \wd14, \bw6, \ldl7, \gene0 ],
 	up: [\kef3, \cabass1, \kef1, \kef0, \kef4, \kef2 ], // kefs,
 	back: [ \noname, \bluecab, \bw5, \ldl8, \braun2, \cabass0 ],
 	right: [ \wd11, \cryptA, \crypt3, \wd13, \braun1, \behring],
-	subs: [\sub0, \sub1]
+	// the subs:
+	subs: [\sub0, \sub1],
+	// same-speakers:
+	wd: [\wd11, \wd12, \wd13, \wd14],
+	kef: [\kef0, \kef1, \kef2, \kef3, \kef4],
+	cabass: [\cabass0, \cabass1, \cabass2],
+	// pairs by brand/type
+	bw: [\bw5, \bw6],
+	ldl: [\ldl7, \ldl8],
+	braun: [\braun1, \braun2],
+	amps: [\behring, \bluecab],
+	crypt: [\cryptA, \crypt3],
 );
 
 q.ntss.showRing = { |nt, ringName, show=true|
@@ -271,6 +283,7 @@ WinBounds.addMake(\SpatioScope, {
 
 	q.spat.ampViews.do(_.stringColor_(Color.white));
 	q.spat.ampViews.do {|view,i|
+		view.bounds = view.bounds.height_(30);
 		view.string = q.ntss.speakersActive[i];
 		view.mouseDownAction = {
 			var name = q.ntss.speakersActive[i];
