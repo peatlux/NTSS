@@ -56,7 +56,7 @@ MFdef(\updatePchWin).(q.pchains[2]);
 
 // get all desired source Ndefs :
 // everything audio except the chains and panners,
-q.ntss.getSrcNdefs = {
+NTSS.getSrcNdefs = {
 	var sources = Ndef.all[s.name].envir.asArray;
 	sources = sources.select { |px| px.rate == \audio };
 	q.pchains.do { |chain|
@@ -72,7 +72,7 @@ WinBounds.addMake(\allSrcNdefs, {
 	var w = Window("allSrcNdefs", Rect(595.0, 360.0, 400.0, 400.0)).front;
 	w.background_(Color.grey);
 	w.view.layout = GridLayout.rows(
-		*q.ntss.getSrcNdefs.collect { |ndef|
+		*NTSS.getSrcNdefs.collect { |ndef|
 			DragSource(w).object_(ndef) }.clump(4)
 	);
 	w;
@@ -89,7 +89,7 @@ MFdef(\allSrcChoose).add(\choose, { |pchain, xy|
 
 	w.background_(Color.grey);
 	w.view.layout = GridLayout.rows(
-		*q.ntss.getSrcNdefs.collect { |ndef|
+		*NTSS.getSrcNdefs.collect { |ndef|
 			Button(w).states_([[ndef.key]])
 			.action_({ MFdef(\setSrc).(pchain, ndef); w.close })
 		}.clump(4)
