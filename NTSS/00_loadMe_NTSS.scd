@@ -42,17 +42,20 @@ q.ntss.speakersDict = (
 	//      x    y    z   amp
 	bw5: [ 1.2, 5.3, 0.0, 0.4],
 	bw6: [ -4.0, -1.0, 1.3, 0.35],
-	cabass2: [ -0.5, 2.8, 0.8, 0.13],
+	cabass2: [ -0.5, 2.7, 0.8, 0.13],
 	cabass0: [ -0.5, 2.9, 0.8, 0.13],
 	cabass1: [ 6.0, 3.8, 3.5, 0.14],
 	ldl7: [ 0.5, -1.0, 2.0, 0.15],
 	ldl8: [ -3.5, 5.2, 0.0, 0.3],
 	gene0: [ 2.0, -0.5, 1.0, 0.7],
+
+	///// group as up
 	kef0: [ -3.0, 3.0, 3.2, 0.5],
 	kef1: [ 0.5, 6.0, 3.2, 0.5],
-	kef2: [ 0.5, -0.7, 3.2, 0.5],
-	kef3: [ 1.5, 1.0, 2.9, 0.5],
+	kef2: [ 0.5, -0.6, 3.2, 0.5],
+	kef3: [ 1.5, 1.1, 2.9, 0.5],
 	kef4: [ -3.5, 2.5, 3.0, 0.5],
+
 	wd14: [ -3.5, 1.0, 0.5, 0.4],
 	wd13: [ 6.0, 1.5, 1.0, 0.4],
 	wd12: [ 1.5, 0.5, 0.2, 0.32],
@@ -64,9 +67,42 @@ q.ntss.speakersDict = (
 	behring: [ 2.5, 3.0, 2.0, 0.6],
 	cryptA: [ 4.5, -0.5, 1.0, 0.5],
 	bluecab: [ 2.2, 5.5, 2.2, 0.3],
+
+	// not in any group
 	sub0: [ 0.0, 0.0, 0.0, 1],
 	sub1: [ -3.5, 2.8, 0.0, 1]
 );
+
+// make 4 rings of 6 speakers each
+q.ntss.ringDict = (
+	// clockwise, always begin at center, so they can be one long twirl
+	left: [\wd12, \cabass2, \wd14, \bw6, \ldl7, \gene0 ],
+	up: [\kef3, \cabass1, \kef1, \kef0, \kef4, \kef2 ], // kefs,
+	back: [ \noname, \bluecab, \bw5, \ldl8, \braun2, \cabass0 ],
+	right: [ \wd11, \cryptA, \crypt3, \wd13, \braun1, \behring],
+	subs: [\sub0, \sub1]
+);
+
+q.ntss.showRing = { |nt, ringName, show=true|
+	if (show, "SHOWING %:\n", "HIDING %:\n").postf(ringName);
+	q.ntss.ringDict[ringName].do { |spkName|
+		var index = q.ntss.speakersActive.indexOf(spkName);
+		q.spat.ampViews[index].visible_(show);
+		"  %: %\n".postf(index, spkName);
+	};
+};
+/*
+q.ntss.showRing(\subs, false);
+q.ntss.showRing(\subs);
+q.ntss.showRing(\left, false);
+q.ntss.showRing(\left);
+q.ntss.showRing(\up, false);
+q.ntss.showRing(\up);
+q.ntss.showRing(\right, false);
+q.ntss.showRing(\right);
+q.ntss.showRing(\back, false);
+q.ntss.showRing(\back);
+*/
 
 // in order of physical outputs :
 q.ntss.speakersOrder = [
@@ -224,6 +260,7 @@ WinBounds.addMake(\Levels, {
 WinBounds.addMake(\SpatioScope, {
 	q.spat = SpatioScope.new(q.ntss.speakers.collect {|sp| Point(*sp)}, bounds: Rect(0,0,500,500));
 
+	q.spat.parentView.mouseDownAction = nil;
 	q.spat.magnify_(10);
 	q.spat.parent.background_(Color.blue(0.5));
 	// make amps semitransparent for overlapping speakers
