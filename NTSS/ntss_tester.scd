@@ -59,7 +59,7 @@ Tdef(\bal, {
 q.testpath = thisProcess.nowExecutingPath.openOS;
 
 Butz.add(\testNTSS, {
-	q.testpath .openOS;
-	Tdef(\bal).play.gui;
+	q.testpath.openOS;
+	Tdef(\bal).gui;
 });
 );
