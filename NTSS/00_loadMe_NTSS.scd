@@ -272,6 +272,10 @@ WinBounds.addMake(\Levels, {
 	s.meter.window.name_("Levels").moveTo(0,0);
 });
 
+// Note: Spatio gets added to end of s.defaultGroup,
+// so it shows the signals BEFORE mainvol and speaker remapping.
+// not sure why it sometimes needs stop/start before it shows again.
+
 WinBounds.addMake(\SpatioScope, {
 	q.spat = SpatioScope.new(q.ntss.speakers.collect {|sp| Point(*sp)}, bounds: Rect(0,0,500,500));
 
@@ -297,7 +301,9 @@ WinBounds.addMake(\SpatioScope, {
 });
 
 // get all desired source Ndefs :
-// everything audio except the chains and panners,
+// everything audio except the chains and panners.
+// can be modified, e.g. for use with NTMI.
+
 q.ntss.getSrcNdefs = {
 	var sources = Ndef.all[s.name].envir.asArray;
 	sources = sources.select { |px| px.rate == \audio };
@@ -369,6 +375,8 @@ s.waitForBoot {
 
 	"chanPanGuis.scd".postcs.loadRelative;
 	"TopWindow.scd".postcs.loadRelative;
+	"ntss_tester.scd".postcs.loadRelative;
+	Butz.add('plotTree', { s.plotTree });
 
 	0.1.wait;
 
@@ -388,4 +396,5 @@ s.waitForBoot {
 	// put next setup script in q.ntss.finalSetup,
 	// so it runs here:
 	q.ntss.finalSetup;
+
 };

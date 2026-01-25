@@ -60,6 +60,6 @@ q.testpath = thisProcess.nowExecutingPath.openOS;
 
 Butz.add(\testNTSS, {
 	q.testpath .openOS;
-	Tdef(\bal).play;
+	Tdef(\bal).play.gui;
 });
 );
