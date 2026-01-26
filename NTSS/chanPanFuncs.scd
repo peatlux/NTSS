@@ -35,7 +35,7 @@ NTSS.ringNames.do (Spec.add(_, \amp));
 NTSS.ringsFlat = NTSS.ringNames.collect { |name| NTSS.spkGroups[name] }.flat;
 NTSS.ringsFlatIndices = NTSS.ringsFlat.collect { |spk|
 	var spkIndex = NTSS.speakersActive.indexOf(spk);
-	[ spk, spkIndex ].postln;
+	// [ spk, spkIndex ].postln;
 	spkIndex
 };
 
@@ -87,7 +87,7 @@ ProxyChain.add3(\panFixed, { |srcBus = 0, srcPos = 0, srcWidth = 0|
 	var in = InFeedback.ar(srcBus);
 
 	var panned = NTSS.ringNames.collect { |ringname|
-		var ringamp = ringname.postcs.kr(0.25, 1);
+		var ringamp = ringname.kr(0.25, 1);
 		PanAz.ar(NTSS.ringNumSpks, in, srcPos * 0.3333, ringamp * widAmp, width, 0)
 	}.flat;
 
