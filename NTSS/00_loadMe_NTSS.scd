@@ -18,7 +18,6 @@ NTSS.defaults.numAudioBusChannels = 2048;
 NTSS.defaults.maxNodes = 4096;
 NTSS.defaults.numWireBufs = 512;
 NTSS.defaults.hardwareBufferSize = 256;
-NTSS.defaults.sampleRate = 44100;
 
 
 q = q ? ();
@@ -40,7 +39,9 @@ s.options.numWireBufs = NTSS.numWireBufs;
 s.options.hardwareBufferSize = NTSS.hardwareBufferSize;
 
 // if sampleRate was already set, keep it
-s.options.sampleRate = s.options.sampleRate ? NTSS.sampleRate;
+if (NTSS.sampleRate.notNil) {
+	s.options.sampleRate = NTSS.sampleRate;
+};
 
 
 "speakerData.scd".postcs.loadRelative;
